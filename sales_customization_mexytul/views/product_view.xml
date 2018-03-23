@@ -20,7 +20,7 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                 <field name="company_id" position="before">
-                    <field name="margin" />
+                    <field name="margin" invisible="1"/>
                     <field name="base_price" force_save="1"/>
                 </field>
             </field>
@@ -32,7 +32,7 @@
             <field name="inherit_id" ref="sales_customization_mexytul.product_template_form_view_inherit_margin"/>
             <field name="arch" type="xml">
                 <field name="margin" position="replace">
-                    <field name="margin" />
+                    <field name="margin" invisible="1"/>
                 </field>
                 <field name="base_price" position="replace">
                     <field name="base_price" force_save="1"/>
@@ -46,7 +46,7 @@
             <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
             <field name="arch" type="xml">
                 <field name="standard_price" position="after">
-                    <field name="margin" />
+                    <field name="margin" invisible="1"/>
                     <field name="base_price" force_save="1"/>
                 </field>
             </field>
