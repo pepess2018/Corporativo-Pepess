@@ -34,7 +34,7 @@ class SaleOrderLine(models.Model):
     def product_qty_check_availability(self):
         msg = ''
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-        for oline in self:
+        for oline in self.filtered(lambda ol: ol.product_id.type == 'product'):
             product = oline.product_id.with_context(warehouse=oline.order_id.warehouse_id.id)
             product_qty = oline.product_uom._compute_quantity(oline.product_uom_qty, oline.product_id.uom_id)
             if float_compare(product.virtual_available, product_qty, precision_digits=precision) == -1:
