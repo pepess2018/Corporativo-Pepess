@@ -20,8 +20,9 @@ class SaleOrder(models.Model):
                     raise Warning(_("The Selected customer exceeds the credit limit set or have amount due"))
                 if order.order_line.filtered(lambda ol: ol.price_unit < (ol.product_id.base_price)):
                     raise Warning(_("The Unit price of one or more product is Zero"))
-            if not group_system:
-                order.order_line.product_qty_check_availability()
+                # if not group_system:
+            # I want that if qty is not available in warehouse order cannot be confirmed even Admin user should not be able to confirm the order.
+            order.order_line.product_qty_check_availability()
         return super(SaleOrder, self).action_confirm()
 
 
