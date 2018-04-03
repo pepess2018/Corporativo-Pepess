@@ -43,7 +43,7 @@ class SaleOrderLine(models.Model):
                 if not is_available:
                     title = 'Not enough inventory!'
                     message = 'You plan to sell %s %s but you only have %s %s available in %s warehouse.' % \
-                            (self.product_uom_qty, self.product_uom.name, product.virtual_available, product.uom_id.name, oline.order_id.warehouse_id.name)
+                            (oline.product_uom_qty, oline.product_uom.name, product.virtual_available, product.uom_id.name, oline.order_id.warehouse_id.name)
                     msg = _("Sale Cannot be confirmed \n \n %s Has %s \n \n %s" % (oline.product_id.name, title, message))
                     break
         if not msg:
