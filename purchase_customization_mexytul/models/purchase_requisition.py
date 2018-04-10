@@ -27,7 +27,3 @@ class PurchaseRequisition(models.Model):
     exchange_rate_cost = fields.Float(string="Exchange Rate", help="Exchange Rate: Cost of MXN in USD- This will be inputted by the Customer. (B8)")
     dta_factor = fields.Float(string="DTA Factor", help="DTA Factor: Inputted by the Customer as 0.08 or 0.09. (B9)")
     customs_agent_cost = fields.Float(string="Customs Agent Cost", help="Customs Agent Cost: : This is the cost for custom procedures. This will be inputted by the client. (B10)")
-
-
-class PurchaseRequisitionLine(models.Model):
-    _inherit = "purchase.requisition.line"

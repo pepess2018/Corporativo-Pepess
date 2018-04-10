@@ -13,8 +13,9 @@ Mexytul Purchase Customization
     'depends': ['purchase_requisition', 'purchase', 'base'],
     'data': [
         "views/partner_view.xml",
-        # "views/purchase_view.xml",
         "views/product_view.xml",
+        "views/purchase_view.xml",
+        "views/purchase_requisition_view.xml",
     ],
     'demo': [],
     'qweb': [],
