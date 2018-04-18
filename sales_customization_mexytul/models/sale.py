@@ -54,4 +54,4 @@ class SaleOrderLine(models.Model):
     @api.constrains('price_unit', 'base_price')
     def validate_prices(self):
         if not self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit") and self.filtered(lambda ol: ol.price_unit < ol.product_id.base_price):
-            raise Warning(_("The Unit Price is below the base price"))
+            raise Warning(_("The Products : {} has the Unit Price less than the Base Sale Price.".format(", ".join([ ol.product_id.name for ol in self.filtered(lambda ol: ol.price_unit < ol.product_id.base_price)]))))

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="purchase_order_form_inherit_mexyutl" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.mexyutl</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet//notebook" position="before">
+                    <group>
+                        <group>
+                            <field name="forwarder_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]"/>
+                            <field name="container_capacity" />
+                            <field name="ocean_freight_cost" />
+                        </group>
+                        <group>
+                            <field name="truck_freight_cost" />
+                            <field name="exchange_rate_cost" />
+                            <field name="dta_factor" />
+                            <field name="customs_agent_cost" />
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='order_line']//tree" position="attributes">
+                    <attribute name="editable"></attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
+                    <field name="total_cost_usd" />
+                    <field name="other_costs_usd" />
+                    <field name="unit_volume" />
+                    <field name="total_volume" />
+                    <field name="unit_ocean_freight_usd" />
+                    <field name="unit_truck_freight_usd" />
+                    <field name="total_freight_cost_usd" />
+                    <field name="unit_cost_mxn" />
+                    <field name="total_cost_mxn" />
+                    <field name="unit_ocean_freight_mxn" />
+                    <field name="unit_truck_freight_mxn" />
+                    <field name="total_freight_cost_mxn" />
+                    <field name="unit_freight_cost_mxn" />
+                    <field name="unit_customs_agent_mxn" />
+                    <field name="total_customs_agent_mxn" />
+                    <field name="igi_mxn" />
+                    <field name="sum_cost_before_tax" />
+                    <field name="dta_factor" />
+                    <field name="unit_sum_cost_mxn" />
+                    <field name="total_sum_cost_mxn" />
+                    <field name="price_list_mxn" />
+                    <field name="minimum_price_mxn" />
+                    <field name="margin_prctge" />
+                    <field name="margin_diff_prctge" />
+                    <field name="target_price_usd" />
+                </xpath>
+                <xpath expr="//field[@name='order_line']//form//notebook" position="before">
+                    <group name="mexyutl_dev" string="Mexyutl Compute Cost">
+                        <group>
+                            <field name="total_cost_usd" />
+                            <field name="other_costs_usd" />
+                            <field name="unit_volume" />
+                            <field name="total_volume" />
+                            <field name="unit_ocean_freight_usd" />
+                            <field name="unit_truck_freight_usd" />
+                            <field name="total_freight_cost_usd" />
+                            <field name="unit_cost_mxn" />
+                            <field name="total_cost_mxn" />
+                            <field name="unit_ocean_freight_mxn" />
+                            <field name="unit_truck_freight_mxn" />
+                            <field name="total_freight_cost_mxn" />
+                        </group>
+                        <group>
+                            <field name="unit_freight_cost_mxn" />
+                            <field name="unit_customs_agent_mxn" />
+                            <field name="total_customs_agent_mxn" />
+                            <field name="igi_mxn" />
+                            <field name="sum_cost_before_tax" />
+                            <field name="dta_factor" />
+                            <field name="unit_sum_cost_mxn" />
+                            <field name="total_sum_cost_mxn" />
+                            <field name="price_list_mxn" />
+                            <field name="minimum_price_mxn" />
+                            <field name="margin_prctge" />
+                            <field name="margin_diff_prctge" />
+                            <field name="target_price_usd" />
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
