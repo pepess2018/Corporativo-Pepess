@@ -18,7 +18,7 @@ class SaleOrder(models.Model):
                 amount_total = sum(self.search([('partner_id', '=', order.partner_id.id), ('state', '=', 'sale'), ('invoice_status', '=', 'to invoice')]).mapped('amount_total'))
                 if (order.partner_id.credit_limit - amount_total) < order.amount_total:
                     raise Warning(_("The Selected customer exceeds the credit limit set or have amount due"))
-                if order.order_line.filtered(lambda ol: ol.price_unit < (ol.product_id.base_price)):
+                if order.order_line.filtered(lambda ol: ol.price_unit < (ol.product_id.base_price) and not ol.is_delivery):
                     raise Warning(_("The Unit price of one or more product is Zero"))
                 # if not group_system:
             # I want that if qty is not available in warehouse order cannot be confirmed even Admin user should not be able to confirm the order.
@@ -53,5 +53,5 @@ class SaleOrderLine(models.Model):
     @api.multi
     @api.constrains('price_unit', 'base_price')
     def validate_prices(self):
-        if not self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit") and self.filtered(lambda ol: ol.price_unit < ol.product_id.base_price):
+        if not self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit") and self.filtered(lambda ol: ol.price_unit < ol.product_id.base_price and not self.is_delivery):
             raise Warning(_("The Products : {} has the Unit Price less than the Base Sale Price.".format(", ".join([ ol.product_id.name for ol in self.filtered(lambda ol: ol.price_unit < ol.product_id.base_price)]))))
