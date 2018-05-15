@@ -15,8 +15,7 @@ class SaleOrder(models.Model):
         group_system = self.user_has_groups("base.group_system")
         for order in self:
             if not group_mexytul_credit_limit:
-                amount_total = sum(self.search([('partner_id', '=', order.partner_id.id), ('state', '=', 'sale'), ('invoice_status', '=', 'to invoice')]).mapped('amount_total'))
-                if (order.partner_id.credit_limit - amount_total) < order.amount_total:
+                if (order.partner_id.credit  > order.partner_id.credit_limit):
                     raise Warning(_("The Selected customer exceeds the credit limit set or have amount due"))
                 if order.order_line.filtered(lambda ol: ol.price_unit < (ol.product_id.base_price) and not ol.is_delivery):
                     raise Warning(_("The Unit price of one or more product is Zero"))
