@@ -11,13 +11,21 @@ Mexytul Sales Customization
 * Sale Order Check the Credit Limit of Customer
 * Calculate base price on product from base on margin and cost price
 * Base price check on order line if customer haven't rights
+* As the soon as the delivery is validated, it should create a draft invoice with invoiceable lines automatically.
+  This should be in draft stage.
+* In case there is a return for the delivery then a draft credit note should be automatically created.
     """,
     'category': 'Sales',
     'depends': ['sale', 'base'],
     'data': [
         "data/data.xml",
+
         "views/partner_view.xml",
         "views/product_view.xml",
+
+        "reports/invoice_report.xml",
+
+
     ],
     'demo': [],
     'qweb': [],

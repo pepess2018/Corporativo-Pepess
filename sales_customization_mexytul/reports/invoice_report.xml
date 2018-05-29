@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_invoice_mexytul" inherit_id="account.report_invoice_document">
+        <p t-if="o.payment_term_id" position="replace"/>
+
+        <div class="col-xs-2" t-if="o.origin" position="after">
+            <div class="col-xs-3" t-if="o.payment_term_id">
+                <strong>Payment Deadline:</strong>
+                <p t-field="o.payment_term_id"/>
+            </div>
+            <div class="col-xs-2" t-if="o.user_id">
+                <strong>Commercial:</strong>
+                <p t-field="o.user_id"/>
+            </div>
+            <div class="col-xs-2" t-if="o.user_id">
+                <strong>Tax Regime:</strong>
+                <p t-field="o.user_id"/>
+            </div>
+            <div class="col-xs-2" t-if="o.user_id">
+                <strong>Route:</strong>
+                <p t-field="o.user_id"/>
+            </div>
+        </div>
+
+        <p t-if="o.comment" position="replace"/>
+
+        <p t-if="o.fiscal_position_id.note" position="after">
+            <div class="col-xs-12" style="page-break-inside: avoid;text-transform: uppercase;border: 2px solid;">
+                <!-- <span t-esc="o.currency_id.amount_to_text(o.amount_total)"/> -->
+                <p><span t-field="o.comment"/></p>
+            </div>
+        </p>
+
+    </template>
+
+    <template inherit_id="sale.report_invoice_document_inherit_sale" id="report_invoice_document_inherit_sale_mexytul">
+        <xpath expr="//div[@t-if='o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)']//strong" position="replace">
+            <strong>Address of dispatch place:</strong>
+        </xpath>
+
+    </template>
+</odoo>
