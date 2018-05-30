@@ -13,5 +13,17 @@
             </field>
         </record>
 
+        <record id="res_partner_inherit_form_view_mexytul" model="ir.ui.view">
+            <field name="name">res.partner.form.mexytul</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="email" position="after">
+                    <field name="l10n_mx_edi_usage"/>
+                    <field name="route"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </odoo>

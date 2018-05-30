@@ -16,7 +16,7 @@ Mexytul Sales Customization
 * In case there is a return for the delivery then a draft credit note should be automatically created.
     """,
     'category': 'Sales',
-    'depends': ['sale', 'base'],
+    'depends': ['delivery', 'l10n_mx_edi'],
     'data': [
         "data/data.xml",
 
