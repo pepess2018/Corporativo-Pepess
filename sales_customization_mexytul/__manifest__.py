@@ -22,6 +22,7 @@ Mexytul Sales Customization
 
         "views/partner_view.xml",
         "views/product_view.xml",
+        "views/account_view.xml",
 
         "reports/invoice_report.xml",
 

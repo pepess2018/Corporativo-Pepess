@@ -20,25 +20,70 @@
                 <strong>Route:</strong>
                 <p t-field="o.partner_id.route"/>
             </div>
+            <div class="col-xs-3" t-if="o.type_of_voucher">
+                <strong>Type of Voucher:</strong>
+                <p t-field="o.type_of_voucher"/>
+            </div>
         </div>
 
-        <p t-if="o.comment" position="replace"/>
+        <!-- <p t-if="o.comment" position="replace"/> -->
 
         <p t-if="o.fiscal_position_id.note" position="after">
-            <div class="col-xs-12" style="page-break-inside: avoid;text-transform: uppercase;border: 2px solid;">
+            <div class="col-xs-12 mt8 small" style="page-break-inside: avoid;text-transform: uppercase;border: 2px solid;">
                 <!-- <span t-esc="o.currency_id.amount_to_text(o.amount_total)"/> -->
-                <p><span t-field="o.comment"/></p>
+                <p class="mt8">
+                    DEBO Y PAGARE INCONDICIONALMENTE A LA ORDEN DE CORPORATIVO PEPE SS S.A. DE C.V.  EN ESTA CIUDAD DE TULANCINGO HGO. 
+                    EL DÍA<span class="ml4 mr4" style="border-bottom: 1px solid;border-width: 0.01em;" t-field="o.date_invoice"/>, LA CANTIDAD DE: <span class="ml4 mr4" style="border-bottom: 1px solid;" t-field="o.amount_total"/>
+
+                    (IMPORTE CON LETRA):<span class="ml4 mr4" style="border-bottom: 1px solid;" t-esc="o.currency_id.amount_to_text(o.amount_total)"/>. 
+                    VALOR DE ESTA MERCANCÍA QUE HE RECIBIDO A MI ENTERA SATISFACCIÓN, ESTE PAGARE ES MERCANTIL Y ESTA REGIDO POR LA LEY 
+                    GENERAL DE TÍTULOS Y OPERACIONES DE CRÉDITO EN SU ARTICULO 173 PARTE FINAL Y ARTÍCULOS CORRELATIVOS POR NO SER 
+                    PAGARE DOMICILIADO. 
+                    EL HECHO DE NO SER CUBIERTO A SU VENCIMIENTO CARGAREMOS DESDE LA FECHA DE VENCIMIENTO UN INTERÉS DEL _______% MENSUAL POR TODO EL TIEMPO QUE ESTUVIERE INSOLUTO.</p>
+                    <div class="col-xs-7"/>
+                    <div class="col-xs-5">
+                        <div class="mt8 text-center" style="border-bottom: 1px solid; width: 100%;"></div>
+                        <div class="text-center">Sign in Accordance</div>
+                    </div>
             </div>
         </p>
+
+        <div id="total" position="inside">
+            <div class="col-xs-6">
+                <table class="table table-bordered small">
+                    <tr>
+                        <td class="text-center">
+                            <strong>Total Number Of Products:</strong>
+                            <p t-field="o.total_products"/>
+                        </td>
+                        <td class="text-center">
+                            <strong>Due Amount:</strong>
+                            <p t-field="o.total_due"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <strong>Total Number Of Lines:</strong>
+                            <p t-field="o.total_lines"/>
+                        </td>
+                        <td class="text-center">
+                            <strong>Total Invoiced Amount:</strong>
+                            <p t-field="o.partner_id.total_invoiced"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
     </template>
 
     <template inherit_id="sale.report_invoice_document_inherit_sale" id="report_invoice_document_inherit_sale_mexytul">
-        <xpath expr="//div[@t-if='o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)']//strong" position="replace">
-            <strong>Address of dispatch place:</strong>
-        </xpath>
-        <xpath expr="//div[@t-if='o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)']" position="attributes">
-            <attribute name="t-if">o.partner_shipping_id</attribute>
+        <xpath expr="//div[@t-if='o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)']" position="before">
+            <div t-if="o.warehouse_address_id">
+                <strong>Address of the dispatch place:</strong>
+                <div t-field="o.warehouse_address_id"
+                    t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+            </div>
         </xpath>
 
     </template>
