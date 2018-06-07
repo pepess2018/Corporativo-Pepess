@@ -35,3 +35,9 @@ class ResPartner(models.Model):
         'not the usage that will give the receiver of the document.')
 
     route = fields.Char(string="Route")
+    payment_method = fields.Selection([
+        ('01 Efectivo', '01 Efectivo'),
+        ('02 Cheque', '02 Cheque'),
+        ('03 Transferencia', '03 Transferencia'),
+        ('04 Tarjeta de Crédito', '04 Tarjeta de Crédito'),
+        ('99 Por definir', '99 Por definir')], string="Payment Method")
