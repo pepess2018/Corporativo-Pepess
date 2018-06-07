@@ -22,6 +22,9 @@
                     <field name="l10n_mx_edi_usage"/>
                     <field name="route"/>
                 </field>
+                <field name="category_id" position="after">
+                    <field name="payment_method"/>
+                </field>
             </field>
         </record>
 
