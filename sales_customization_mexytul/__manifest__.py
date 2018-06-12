@@ -4,6 +4,7 @@
     'name': 'Mexytul Sales',
     'summary': 'Mexytul Sales',
     'sequence': 100,
+    'version': '1.1',
     'description': """
 Mexytul Sales Customization
 ===========================
