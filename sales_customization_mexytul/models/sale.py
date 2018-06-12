@@ -24,6 +24,21 @@ class SaleOrder(models.Model):
             order.order_line.product_qty_check_availability()
         return super(SaleOrder, self).action_confirm()
 
+    @api.multi
+    def _prepare_invoice(self):
+        """
+            Inherited to pass the extra value(warehouse address) on invoice
+        """
+
+        res = super(SaleOrder, self)._prepare_invoice()
+        res.update(
+            warehouse_address_id=self.warehouse_id.partner_id.id,
+            payment_method=self.partner_id.payment_method,
+            l10n_mx_edi_usage=self.partner_id.l10n_mx_edi_usage,
+        )
+        res['warehouse_address_id'] = self.warehouse_id.partner_id.id
+        return res
+
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
@@ -49,7 +64,7 @@ class SaleOrderLine(models.Model):
             return True
         raise Warning(msg)
 
-    @api.multi
+    @api.one
     @api.constrains('price_unit', 'base_price')
     def validate_prices(self):
         if not self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit") and self.filtered(lambda ol: ol.price_unit < ol.product_id.base_price and not self.is_delivery):

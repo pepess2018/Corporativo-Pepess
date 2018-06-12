@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_invoice_mexytul" inherit_id="account.report_invoice_document">
+        <p t-if="o.payment_term_id" position="replace"/>
+
+        <div class="col-xs-2" t-if="o.origin" position="after">
+            <div class="col-xs-2" t-if="o.payment_term_id">
+                <strong>PLAZO DE PAGO:</strong>
+                <p t-field="o.payment_term_id"/>
+            </div>
+            <div class="col-xs-2" t-if="o.user_id">
+                <strong>VENDEDOR:</strong>
+                <p t-field="o.user_id"/>
+            </div>
+            <div class="col-xs-2" t-if="o.l10n_mx_edi_usage">
+                <strong>USO CFDI:</strong>
+                <p t-field="o.l10n_mx_edi_usage"/>
+            </div>
+            <div class="col-xs-2" t-if="o.partner_id.route">
+                <strong>Ruta:</strong>
+                <p t-field="o.partner_id.route"/>
+            </div>
+            <div class="col-xs-2" t-if="o.type_of_voucher">
+                <strong>Tipo De Comprobante:</strong>
+                <p t-field="o.type_of_voucher"/>
+            </div>
+            <div class="col-xs-2" t-if="o.payment_method">
+                <strong>Metodo De Pago</strong>
+                <p t-field="o.payment_method"/>
+            </div>
+        </div>
+
+        <!-- <p t-if="o.comment" position="replace"/> -->
+
+        <p t-if="o.fiscal_position_id.note" position="after">
+            <div class="col-xs-12 mt8 small" style="page-break-inside: avoid;text-transform: uppercase;border: 2px solid;">
+                <!-- <span t-esc="o.currency_id.amount_to_text(o.amount_total)"/> -->
+                <t t-set="amount" t-value="int(o.amount_total)"/>
+                <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]"/>
+                <p class="mt8">
+                    DEBO Y PAGARE INCONDICIONALMENTE A LA ORDEN DE CORPORATIVO PEPE SS S.A. DE C.V.  EN ESTA CIUDAD DE TULANCINGO HGO. 
+                    EL DÍA<span class="ml4 mr4" style="border-bottom: 1px solid;border-width: 0.01em;" t-field="o.date_due"/>, LA CANTIDAD DE: <span class="ml4 mr4" style="border-bottom: 1px solid;" t-field="o.amount_total"/>
+
+                     <span class="ml4 mr4" style="border-bottom: 1px solid;"><t t-esc="o.currency_id.amount_to_text(amount)"/> <t t-if="amount_dec != '0'"><t t-esc="amount_dec"/>/100 M.N</t></span>.
+                    VALOR DE ESTA MERCANCÍA QUE HE RECIBIDO A MI ENTERA SATISFACCIÓN, ESTE PAGARE ES MERCANTIL Y ESTA REGIDO POR LA LEY 
+                    GENERAL DE TÍTULOS Y OPERACIONES DE CRÉDITO EN SU ARTICULO 173 PARTE FINAL Y ARTÍCULOS CORRELATIVOS POR NO SER 
+                    PAGARE DOMICILIADO. 
+                    EL HECHO DE NO SER CUBIERTO A SU VENCIMIENTO CARGAREMOS DESDE LA FECHA DE VENCIMIENTO UN INTERÉS DEL _______% MENSUAL POR TODO EL TIEMPO QUE ESTUVIERE INSOLUTO.</p>
+                    <div class="col-xs-7"/>
+                    <div class="col-xs-5">
+                        <div class="mt16 text-center" style="border-bottom: 1px solid; width: 100%;"></div>
+                        <div class="text-center">FIRMA DE CONFORMIDAD</div>
+                    </div>
+            </div>
+        </p>
+        <xpath expr="//*[@id='total']//table/tr[last()]" position="after">
+            <tr class="border-black">
+                <td class="text-right" colspan="2">
+                    <t t-set="amount" t-value="int(o.amount_total)" />
+                    <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]" />
+                    <span>
+                        <t t-esc="o.currency_id.amount_to_text(amount)" />
+                        <t t-if="amount_dec != '0'">
+                            <t t-esc="amount_dec" />/100 M.N</t>
+                    </span>
+                </td>
+            </tr>
+        </xpath>
+        <div id="total" position="inside">
+            <div class="col-xs-6">
+                <table class="table table-bordered small">
+                    <tr>
+                        <td class="text-center">
+                            <strong>NUMERO TOTAL DE PRODUCTOS:</strong>
+                            <p t-field="o.total_products"/>
+                        </td>
+                        <td class="text-center">
+                            <strong>SALDO TOTAL:</strong>
+                            <p t-field="o.total_due"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+                            <strong>NUMERO TOTAL DE PARTIDAS:</strong>
+                            <p t-field="o.total_lines"/>
+                        </td>
+                        <td class="text-center">
+                            <strong>SALDO VENCIDO:</strong>
+                            <p t-field="o.balance_expiration"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </template>
+
+    <template inherit_id="sale.report_invoice_document_inherit_sale" id="report_invoice_document_inherit_sale_mexytul">
+        <xpath expr="//div[@t-if='o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)']" position="before">
+            <div t-if="o.warehouse_address_id">
+                <strong>LUGAR DE EXPEDICION:</strong>
+                <div t-field="o.warehouse_address_id"
+                    t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+            </div>
+        </xpath>
+
+    </template>
+</odoo>
