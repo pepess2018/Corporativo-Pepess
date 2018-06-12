@@ -39,7 +39,7 @@
                 <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]"/>
                 <p class="mt8">
                     DEBO Y PAGARE INCONDICIONALMENTE A LA ORDEN DE CORPORATIVO PEPE SS S.A. DE C.V.  EN ESTA CIUDAD DE TULANCINGO HGO. 
-                    EL DÍA<span class="ml4 mr4" style="border-bottom: 1px solid;border-width: 0.01em;" t-field="o.date_invoice"/>, LA CANTIDAD DE: <span class="ml4 mr4" style="border-bottom: 1px solid;" t-field="o.amount_total"/>
+                    EL DÍA<span class="ml4 mr4" style="border-bottom: 1px solid;border-width: 0.01em;" t-field="o.date_due"/>, LA CANTIDAD DE: <span class="ml4 mr4" style="border-bottom: 1px solid;" t-field="o.amount_total"/>
 
                      <span class="ml4 mr4" style="border-bottom: 1px solid;"><t t-esc="o.currency_id.amount_to_text(amount)"/> <t t-if="amount_dec != '0'"><t t-esc="amount_dec"/>/100 M.N</t></span>.
                     VALOR DE ESTA MERCANCÍA QUE HE RECIBIDO A MI ENTERA SATISFACCIÓN, ESTE PAGARE ES MERCANTIL Y ESTA REGIDO POR LA LEY 
@@ -53,7 +53,19 @@
                     </div>
             </div>
         </p>
-
+        <xpath expr="//*[@id='total']//table/tr[last()]" position="after">
+            <tr class="border-black">
+                <td class="text-right" colspan="2">
+                    <t t-set="amount" t-value="int(o.amount_total)" />
+                    <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]" />
+                    <span>
+                        <t t-esc="o.currency_id.amount_to_text(amount)" />
+                        <t t-if="amount_dec != '0'">
+                            <t t-esc="amount_dec" />/100 M.N</t>
+                    </span>
+                </td>
+            </tr>
+        </xpath>
         <div id="total" position="inside">
             <div class="col-xs-6">
                 <table class="table table-bordered small">
