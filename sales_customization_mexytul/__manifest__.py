@@ -4,6 +4,7 @@
     'name': 'Mexytul Sales',
     'summary': 'Mexytul Sales',
     'sequence': 100,
+    'version': 1.0,
     'description': """
 Mexytul Sales Customization
 ===========================
@@ -19,14 +20,10 @@ Mexytul Sales Customization
     'depends': ['delivery', 'l10n_mx_edi'],
     'data': [
         "data/data.xml",
-
         "views/partner_view.xml",
         "views/product_view.xml",
         "views/account_view.xml",
-
         "reports/invoice_report.xml",
-
-
     ],
     'demo': [],
     'qweb': [],
