@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="credit_limit_partner_inherit_form_view" model="ir.ui.view">
+            <field name="name">credit.limit.res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <field name="property_payment_term_id" position="after">
+                    <field name="credit_limit" groups="sales_customization_mexytul.group_mexytul_credit_limit"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="res_partner_inherit_form_view_mexytul" model="ir.ui.view">
+            <field name="name">res.partner.form.mexytul</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="email" position="after">
+                    <field name="l10n_mx_edi_usage"/>
+                    <field name="route"/>
+                </field>
+                <field name="category_id" position="after">
+                    <field name="payment_method"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="product_category_form_view_inherit_margin" model="ir.ui.view">
+            <field name="name">product.category.form.inherit.margin</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="margin" />
+                </field>
+            </field>
+        </record>
+
+
+        <record id="product_template_form_view_inherit_margin" model="ir.ui.view">
+            <field name="name">product.template.form.inherit.margin</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="before">
+                    <field name="margin" invisible="1"/>
+                    <field name="base_price" force_save="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_product_form_view_inherit_margin" model="ir.ui.view">
+            <field name="name">product.product.form.inherit.margin</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="sales_customization_mexytul.product_template_form_view_inherit_margin"/>
+            <field name="arch" type="xml">
+                <field name="margin" position="replace">
+                    <field name="margin" invisible="1"/>
+                </field>
+                <field name="base_price" position="replace">
+                    <field name="base_price" force_save="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_product_easy_form_view_inherit_margin" model="ir.ui.view">
+            <field name="name">product.product.easy.form.inherit.margin</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+            <field name="arch" type="xml">
+                <field name="standard_price" position="after">
+                    <field name="margin" invisible="1"/>
+                    <field name="base_price" force_save="1"/>
+                </field>
+            </field>
+        </record>
+        
+    
+    </data>
+</odoo>

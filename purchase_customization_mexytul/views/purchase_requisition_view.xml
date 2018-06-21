@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="purchase_requisition_form_inherit_mexyutl" model="ir.ui.view">
+            <field name="name">purchase.requisition.form.inherit.mexyutl</field>
+            <field name="model">purchase.requisition</field>
+            <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet//notebook" position="before">
+                    <group>
+                        <group>
+                            <field name="forwarder_id" />
+                            <field name="container_capacity" />
+                            <field name="ocean_freight_cost" />
+                        </group>
+                        <group>
+                            <field name="truck_freight_cost" />
+                            <field name="exchange_rate_cost" />
+                            <field name="dta_factor" />
+                            <field name="customs_agent_cost" />
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="group_mexytul_credit_limit" model="res.groups">
+            <field name="name">Credit Limit</field>
+            <field name="comment">Credit Limit show on Partner Form and user will be edited and this right allowed to confirmed sale order to this user if credit limit exceed or not</field>
+        </record>
+
+    </data>
+</odoo>
