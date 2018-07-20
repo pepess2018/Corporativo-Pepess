@@ -74,7 +74,7 @@ class AccountFollowupReport(models.AbstractModel):
                     pricelist,
                     aml.invoice_id.number,
                     sum([inv_line.quantity * inv_line.price_unit for inv_line in aml.invoice_id.invoice_line_ids]),
-                    sum([inv_line.price_unit*(inv_line.discount/100) * inv_line.quantity for inv_line in aml.invoice_id.invoice_line_ids]),
+                    sum([inv_line.discount and inv_line.price_subtotal*(inv_line.discount/100) or 0.00 for inv_line in aml.invoice_id.invoice_line_ids]),
                     aml.invoice_id.amount_total,
                     aml.invoice_id.payment_ids and sum(aml.invoice_id.payment_ids.mapped('amount')) or 0.00,
                     amount
