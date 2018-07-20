@@ -65,7 +65,6 @@ class AccountFollowupReport(models.AbstractModel):
                 if aml.invoice_id and public_pricelist:
                     pricelist = _('Public Pricelist') if aml.invoice_id.partner_id.property_product_pricelist == public_pricelist else _('Tarifa de venta')
                 # Total invoice imount without discount
-                currency = aml.company_currency_id
                 total_invoice = sum([inv_line.quantity * inv_line.price_unit for inv_line in aml.invoice_id.invoice_line_ids])
                 total_invoice = total_invoice + aml.invoice_id.amount_tax
                 # total discount
@@ -80,8 +79,8 @@ class AccountFollowupReport(models.AbstractModel):
                     aml.invoice_id and (datetime.strptime(aml.date_maturity, "%Y-%m-%d") - datetime.strptime(aml.invoice_id.date_invoice, "%Y-%m-%d")).days or 0,
                     pricelist,
                     aml.invoice_id.number,
-                    float_round(total_invoice, precision_digits=currency.decimal_places),
-                    float_round(total_discount, precision_digits=currency.decimal_places),
+                    self.format_value(total_invoice, currency=currency),
+                    self.format_value(total_discount, currency=currency),
                     aml.invoice_id.amount_total,
                     aml.invoice_id.payment_ids and sum(aml.invoice_id.payment_ids.mapped('amount')) or 0.00,
                     amount
