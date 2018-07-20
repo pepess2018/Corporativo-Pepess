@@ -3,6 +3,7 @@
 
 from datetime import datetime
 from odoo import api, fields, models, _
+from odoo.tools import float_round
 from odoo.tools.misc import formatLang, format_date
 
 
@@ -63,6 +64,12 @@ class AccountFollowupReport(models.AbstractModel):
                 public_pricelist = self.env.ref('product.list0', raise_if_not_found=False)
                 if aml.invoice_id and public_pricelist:
                     pricelist = _('Public Pricelist') if aml.invoice_id.partner_id.property_product_pricelist == public_pricelist else _('Tarifa de venta')
+                # Total invoice imount without discount
+                currency = aml.company_currency_id
+                total_invoice = sum([inv_line.quantity * inv_line.price_unit for inv_line in aml.invoice_id.invoice_line_ids])
+                total_invoice = total_invoice + aml.invoice_id.amount_tax
+                # total discount
+                total_discount = sum([inv_line.discount and inv_line.price_unit*(inv_line.discount/100) * inv_line.quantity or 0.00 for inv_line in aml.invoice_id.invoice_line_ids])
                 columns = [
                     format_date(self.env, aml.date, lang_code=lang_code),
                     date_due,
@@ -73,13 +80,12 @@ class AccountFollowupReport(models.AbstractModel):
                     aml.invoice_id and (datetime.strptime(aml.date_maturity, "%Y-%m-%d") - datetime.strptime(aml.invoice_id.date_invoice, "%Y-%m-%d")).days or 0,
                     pricelist,
                     aml.invoice_id.number,
-                    sum([inv_line.quantity * inv_line.price_unit for inv_line in aml.invoice_id.invoice_line_ids]),
-                    sum([inv_line.discount and inv_line.price_subtotal*(inv_line.discount/100) or 0.00 for inv_line in aml.invoice_id.invoice_line_ids]),
+                    float_round(total_invoice, precision_digits=currency.decimal_places),
+                    float_round(total_discount, precision_digits=currency.decimal_places),
                     aml.invoice_id.amount_total,
                     aml.invoice_id.payment_ids and sum(aml.invoice_id.payment_ids.mapped('amount')) or 0.00,
                     amount
                     ]
-                print(aml.invoice_id.payment_ids)
                 if self.env.context.get('print_mode'):
                     columns = columns[:3]+columns[5:]
                 lines.append({
