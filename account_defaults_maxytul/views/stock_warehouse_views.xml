@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="stock_warehouse_form_inherit_account_defaults_maxytul" model="ir.ui.view">
+	    <field name="name">stock.warehouse.form.inherit.account_defaults_maxytul</field>
+	    <field name="model">stock.warehouse</field>
+	    <field name="inherit_id" ref="stock.view_warehouse"/>
+	    <field name="arch" type="xml">
+	    	<field name="partner_id" position="after">
+				<field name="out_invoice_journal_id"/>
+				<field name="out_refund_journal_id"/>
+				<field name="in_invoice_journal_id"/>
+				<field name="in_refund_journal_id"/>
+				<field name="stock_valuation_account_id"/>
+				<field name="valuation_in_account_id"/>
+				<field name="valuation_out_account_id"/>
+	    	</field>
+	    </field>
+	</record>
+</odoo>
