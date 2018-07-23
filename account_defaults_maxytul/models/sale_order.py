@@ -24,5 +24,5 @@ class SaleOrderLine(models.Model):
         invoice_line_values = super(SaleOrderLine, self)._prepare_invoice_line(qty)
         if self.order_id.warehouse_id and self.order_id.warehouse_id.out_invoice_journal_id:
             invoice_account = invoice_line_values['account_id']
-            invoice_line_values['account_id'] = self.order_id.warehouse_id.out_invoice_journal_id.default_credit_account_id and self.order_id.warehouse_id.out_invoice_journal_id.default_credit_account_id.id or invoice_account
+            invoice_line_values['account_id'] = self.order_id.warehouse_id.out_invoice_journal_id.income_account_id and self.order_id.warehouse_id.out_invoice_journal_id.income_account_id.id or invoice_account
         return invoice_line_values
