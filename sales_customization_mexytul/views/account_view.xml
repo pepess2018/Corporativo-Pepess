@@ -5,15 +5,17 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_form" />
         <field name="arch" type="xml">
-            <field name="payment_term_id" position="before">
-                <field name="warehouse_address_id" groups="sale.group_delivery_invoice_address" />
-                <field name="type_of_voucher" invisble="1"/>
-                <field name="payment_method" invisble="1"/>
-            </field>
+            <data>
+                <field name="payment_term_id" position="before">
+                    <field name="warehouse_address_id" groups="sale.group_delivery_invoice_address" />
+                    <field name="type_of_voucher" invisble="1"/>
+                    <field name="payment_method" invisble="1"/>
+                </field>
 
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="before">
-                <field name="tax_amount"/>
-            </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="before">
+                    <field name="tax_amount"/>
+                </xpath>
+            </data>
         </field>
     </record>
 </odoo>

@@ -60,7 +60,7 @@ class AccountInvoice(models.Model):
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
-    tax_amount = fields.Monetary(compute='_compute_tax_amount', string="Total Due", store=True, readonly=True)
+    tax_amount = fields.Monetary(compute='_compute_tax_amount', string="Tax Amount", store=True, readonly=True)
 
     @api.multi
     def _compute_tax_amount(self):
