@@ -69,6 +69,7 @@ class AccountFollowupReport(models.AbstractModel):
                 total_invoice = total_invoice + aml.invoice_id.amount_tax
                 # total discount
                 total_discount = sum([inv_line.discount and inv_line.price_unit*(inv_line.discount/100) * inv_line.quantity or 0.00 for inv_line in aml.invoice_id.invoice_line_ids])
+                payments = aml.invoice_id.payment_move_line_ids and sum([payment_vals['amount'] for payment_vals in aml.invoice_id._get_payments_vals()]) or 0.00
                 columns = [
                     format_date(self.env, aml.date, lang_code=lang_code),
                     date_due,
@@ -82,7 +83,7 @@ class AccountFollowupReport(models.AbstractModel):
                     self.format_value(total_invoice, currency=currency),
                     self.format_value(total_discount, currency=currency),
                     aml.invoice_id.amount_total,
-                    aml.invoice_id.payment_ids and sum(aml.invoice_id.payment_ids.mapped('amount')) or 0.00,
+                    self.format_value(payments, currency=currency),
                     amount
                     ]
                 if self.env.context.get('print_mode'):
