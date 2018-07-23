@@ -82,7 +82,7 @@ class AccountFollowupReport(models.AbstractModel):
                     aml.invoice_id.number,
                     self.format_value(total_invoice, currency=currency),
                     self.format_value(total_discount, currency=currency),
-                    aml.invoice_id.amount_total,
+                    self.format_value(aml.invoice_id.amount_total, currency),
                     self.format_value(payments, currency=currency),
                     amount
                     ]
