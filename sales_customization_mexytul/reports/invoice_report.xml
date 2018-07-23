@@ -37,7 +37,7 @@
                 <!-- <span t-esc="o.currency_id.amount_to_text(o.amount_total)"/> -->
                 <t t-set="amount" t-value="int(o.amount_total)"/>
                 <!-- <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]"/> -->
-                <t t-set="amount_dec" t-value="str(o.amount_total).split(".")[1]"/>
+                <t t-set="amount_dec" t-value="str(o.amount_total).split('.')[1]"/>
                 <p class="mt8">
                     DEBO Y PAGARE INCONDICIONALMENTE A LA ORDEN DE CORPORATIVO PEPE SS S.A. DE C.V.  EN ESTA CIUDAD DE TULANCINGO HGO. 
                     EL DÍA<span class="ml4 mr4" style="border-bottom: 1px solid;border-width: 0.01em;" t-field="o.date_due"/>, LA CANTIDAD DE: <span class="ml4 mr4" style="border-bottom: 1px solid;" t-field="o.amount_total"/>
@@ -59,7 +59,7 @@
                 <td class="text-right" colspan="2">
                     <t t-set="amount" t-value="int(o.amount_total)" />
                     <!-- <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]" /> -->
-                    <t t-set="amount_dec" t-value="str(o.amount_total).split(".")[1]"/>
+                    <t t-set="amount_dec" t-value="str(o.amount_total).split('.')[1]"/>
                     <span>
                         <t t-esc="o.currency_id.amount_to_text(amount)" />
                         <t t-if="amount_dec != '0'">
