@@ -15,6 +15,7 @@ Maxytul: Accounting defaults
     'depends': ['sale_stock', 'stock_account', 'purchase', 'point_of_sale'],
     'data': [
         'views/stock_warehouse_views.xml',
+        'views/account_journal_views.xml',
         'views/pos_config_views.xml'
     ],
     'license': 'OEEL-1',

@@ -26,6 +26,8 @@ class AccountInvoice(models.Model):
             if self.type == 'in_invoice' and purchase_order.picking_type_id:
                 if purchase_order.picking_type_id.warehouse_id.in_invoice_journal_id:
                     self.journal_id = purchase_order.picking_type_id.warehouse_id.in_invoice_journal_id
+                if purchase_order.picking_type_id.warehouse_id.in_invoice_journal_id.expense_account_id:
+                    self.invoice_line_ids.update({'account_id': purchase_order.picking_type_id.warehouse_id.in_invoice_journal_id.expense_account_id.id})
         return res
 
     @api.model
@@ -45,4 +47,25 @@ class AccountInvoice(models.Model):
             warehouse = purchase_id.picking_type_id.warehouse_id
             if getattr(warehouse, journal_inv_mapping[invoice.type], False):
                 journal_id = getattr(warehouse, journal_inv_mapping[invoice.type]).id
-        return super(AccountInvoice, self)._prepare_refund(invoice, date_invoice=date_invoice, date=date, description=description, journal_id=journal_id)
+        values = super(AccountInvoice, self)._prepare_refund(invoice, date_invoice=date_invoice, date=date, description=description, journal_id=journal_id)
+        inv_journal = self.env['account.journal'].browse(values['journal_id'])
+        for inv_line in values['invoice_line_ids']:
+            inv_line_values = inv_line[2]
+            inv_line_acc = inv_line_values['account_id']
+            if inv_journal.income_account_id and inv_line_values['account_id'] == inv_journal.income_account_id.id:
+                inv_line_values['account_id'] = inv_journal.expense_account_id and inv_journal.expense_account_id.id or inv_line_acc
+            elif inv_journal.expense_account_id and inv_line_values['account_id'] == inv_journal.expense_account_id.id:
+                inv_line_values['account_id'] = inv_journal.income_account_id and inv_journal.income_account_id.id or inv_line_acc
+        return values
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = "account.invoice.line"
+
+    @api.model
+    def _default_account(self):
+        if self._context.get('journal_id'):
+            journal = self.env['account.journal'].browse(self._context.get('journal_id'))
+            if self._context.get('type') in ('out_invoice', 'in_refund'):
+                return journal.income_account_id and journal.income_account_id.id or journal.default_credit_account_id.id
+            return journal.expense_account_id and journal.expense_account_id.id or journal.default_debit_account_id

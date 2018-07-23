@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="account_journal_view_form_inherit_accounts_defaults_maxytul" model="ir.ui.view">
+	    <field name="name">account.journal.form.inherit.accounts_defaults_maxytul</field>
+	    <field name="model">account.journal</field>
+	    <field name="inherit_id" ref="account.view_account_journal_form"/>
+	    <field name="arch" type="xml">
+	    	<xpath expr="//field[@name='default_credit_account_id']/.." position="after">
+	    		<group string="Warehouse related income/expense accounts">
+	    			<field name="income_account_id"/>
+	    			<field name="expense_account_id"/>
+	    		</group>
+	    	</xpath>
+	    </field>
+	</record>
+</odoo>
