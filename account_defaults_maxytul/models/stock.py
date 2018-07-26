@@ -36,7 +36,7 @@ class StockMove(models.Model):
         if self.warehouse_id.stock_valuation_account_id:
             acc_valuation = self.warehouse_id.stock_valuation_account_id.id
         if self.warehouse_id.valuation_out_account_id:
-            acc_src = self.warehouse_id.valuation_out_account_id.id
+            acc_dest = self.warehouse_id.valuation_out_account_id.id
         if self.warehouse_id.valuation_in_account_id:
-            acc_dest = self.warehouse_id.valuation_in_account_id.id
+            acc_src = self.warehouse_id.valuation_in_account_id.id
         return journal_id, acc_src, acc_dest, acc_valuation
