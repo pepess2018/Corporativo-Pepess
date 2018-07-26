@@ -20,7 +20,7 @@
                 <strong>Ruta:</strong>
                 <p t-field="o.partner_id.route"/>
             </div>
-            <div class="col-xs-3" name="tipodecomprobante">
+            <div class="col-xs-3" name="tipodecomprobante" t-if="xml.get('TipoDeComprobante')">
                 <strong>Tipo De Comprobante:</strong>
                 <p t-esc="xml.get('TipoDeComprobante')"/>
             </div>
@@ -28,7 +28,7 @@
                 <strong>Forma De Pago</strong>
                 <p t-field="o.payment_method"/>
             </div>
-            <div class="col-xs-2" name="moneda">
+            <div class="col-xs-2" name="moneda" t-if="xml.get('Moneda')">
                 <strong>Moneda:</strong>
                 <p t-esc="xml.get('Moneda')"/>
             </div>
