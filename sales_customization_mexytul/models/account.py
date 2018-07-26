@@ -62,7 +62,7 @@ class AccountInvoiceLine(models.Model):
 
     tax_amount = fields.Monetary(compute='_compute_tax_amount', string="Tax Amount", store=True, readonly=True)
 
-    @api.multi
+    @api.depends('price_total', 'price_subtotal', 'invoice_line_tax_ids')
     def _compute_tax_amount(self):
         for line in self.filtered(lambda ln: ln.invoice_line_tax_ids):
             line.tax_amount =  line.price_total - line.price_subtotal

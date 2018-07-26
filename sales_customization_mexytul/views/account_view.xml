@@ -9,7 +9,7 @@
                 <field name="payment_term_id" position="before">
                     <field name="warehouse_address_id" groups="sale.group_delivery_invoice_address" />
                     <field name="type_of_voucher" invisible="1"/>
-                    <field name="payment_method" invisible="1"/>
+                    <field name="payment_method"/>
                 </field>
 
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="before">

@@ -20,17 +20,31 @@
                 <strong>Ruta:</strong>
                 <p t-field="o.partner_id.route"/>
             </div>
-            <div class="col-xs-2" t-if="o.type_of_voucher">
+            <div class="col-xs-3" name="tipodecomprobante">
                 <strong>Tipo De Comprobante:</strong>
-                <p t-field="o.type_of_voucher"/>
+                <p t-esc="xml.get('TipoDeComprobante')"/>
             </div>
             <div class="col-xs-2" t-if="o.payment_method">
                 <strong>Forma De Pago</strong>
                 <p t-field="o.payment_method"/>
             </div>
+            <div class="col-xs-2" name="moneda">
+                <strong>Moneda:</strong>
+                <p t-esc="xml.get('Moneda')"/>
+            </div>
         </div>
 
-        <!-- <p t-if="o.comment" position="replace"/> -->
+        <xpath expr="//t[@t-set='usage']/../.." position="replace">
+            <t t-if="o.l10n_mx_edi_cfdi_uuid">
+                <div class="col-xs-2" t-if="xml.get('NumCtaPago')">
+                    <strong>Bank Account:</strong>
+                    <p t-esc="xml.get('NumCtaPago')"/>
+                </div>
+            </t>
+        </xpath>
+
+        <!-- <div name="usage" position="replace"/>
+        <t t-if="o.l10n_mx_edi_payment_method_id" position="replace"/> -->
 
         <p t-if="o.fiscal_position_id.note" position="after">
             <div class="col-xs-12 mt8 small" style="page-break-inside: avoid;text-transform: uppercase;border: 2px solid;">
