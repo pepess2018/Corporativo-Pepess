@@ -51,7 +51,7 @@
                 <span t-field="l.tax_amount"/>
             </td>
         </xpath>
-        <xpath expr="//tbody[hasclass('invoice_tbody')]/tr[last()]/td[@t-if='display_discount']" position="before">
+        <xpath expr="//tbody[hasclass('invoice_tbody')]//tr[last()]/td[@t-if='display_discount']" position="before">
             <td></td>
         </xpath>
         <!-- <div name="usage" position="replace"/>
