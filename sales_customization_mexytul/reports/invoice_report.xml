@@ -12,36 +12,63 @@
                 <strong>VENDEDOR:</strong>
                 <p t-field="o.user_id"/>
             </div>
-            <div class="col-xs-2" t-if="o.l10n_mx_edi_usage">
+            <div class="col-xs-2" t-if="o.partner_id.l10n_mx_edi_usage">
                 <strong>USO CFDI:</strong>
-                <p t-field="o.l10n_mx_edi_usage"/>
+                <p t-field="o.partner_id.l10n_mx_edi_usage"/>
             </div>
             <div class="col-xs-2" t-if="o.partner_id.route">
                 <strong>Ruta:</strong>
                 <p t-field="o.partner_id.route"/>
             </div>
-            <div class="col-xs-2" t-if="o.type_of_voucher">
+            <div class="col-xs-3" name="tipodecomprobante" t-if="xml and xml.get('TipoDeComprobante')">
                 <strong>Tipo De Comprobante:</strong>
-                <p t-field="o.type_of_voucher"/>
+                <p t-esc="xml.get('TipoDeComprobante')"/>
             </div>
             <div class="col-xs-2" t-if="o.payment_method">
-                <strong>Metodo De Pago</strong>
+                <strong>Forma De Pago</strong>
                 <p t-field="o.payment_method"/>
+            </div>
+            <div class="col-xs-2" name="moneda" t-if="xml and xml.get('Moneda')">
+                <strong>Moneda:</strong>
+                <p t-esc="xml.get('Moneda')"/>
             </div>
         </div>
 
-        <!-- <p t-if="o.comment" position="replace"/> -->
+        <xpath expr="//t[@t-set='usage']/../.." position="replace">
+            <t t-if="o.l10n_mx_edi_cfdi_uuid">
+                <div class="col-xs-2" t-if="xml.get('NumCtaPago')">
+                    <strong>Bank Account:</strong>
+                    <p t-esc="xml.get('NumCtaPago')"/>
+                </div>
+            </t>
+        </xpath>
+
+        <xpath expr="//table[@name='invoice_line_table']//th[@t-if='display_discount']" position="after">
+            <th class="text-right">Tax Amount</th>
+        </xpath>
+        <xpath expr="//tbody[hasclass('invoice_tbody')]//td[@t-if='display_discount']" position="after">
+            <td class="text-right">
+                <span t-field="l.tax_amount"/>
+            </td>
+        </xpath>
+        <xpath expr="//tbody[hasclass('invoice_tbody')]//tr[last()]/td[@t-if='display_discount']" position="before">
+            <td></td>
+        </xpath>
+        <!-- <div name="usage" position="replace"/>
+        <t t-if="o.l10n_mx_edi_payment_method_id" position="replace"/> -->
 
         <p t-if="o.fiscal_position_id.note" position="after">
             <div class="col-xs-12 mt8 small" style="page-break-inside: avoid;text-transform: uppercase;border: 2px solid;">
                 <!-- <span t-esc="o.currency_id.amount_to_text(o.amount_total)"/> -->
-                <t t-set="amount" t-value="int(o.amount_total)"/>
-                <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]"/>
+                <!-- <t t-set="amount" t-value="int(o.amount_total)"/> -->
+                <!-- <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]"/> -->
+                <!-- <t t-set="amount_dec" t-value="str(o.amount_total).split('.')[1]"/> -->
                 <p class="mt8">
                     DEBO Y PAGARE INCONDICIONALMENTE A LA ORDEN DE CORPORATIVO PEPE SS S.A. DE C.V.  EN ESTA CIUDAD DE TULANCINGO HGO. 
                     EL DÍA<span class="ml4 mr4" style="border-bottom: 1px solid;border-width: 0.01em;" t-field="o.date_due"/>, LA CANTIDAD DE: <span class="ml4 mr4" style="border-bottom: 1px solid;" t-field="o.amount_total"/>
 
-                     <span class="ml4 mr4" style="border-bottom: 1px solid;"><t t-esc="o.currency_id.amount_to_text(amount)"/> <t t-if="amount_dec != '0'"><t t-esc="amount_dec"/>/100 M.N</t></span>.
+                     <!-- <span class="ml4 mr4" style="border-bottom: 1px solid;"><t t-esc="o.currency_id.amount_to_text(amount)"/> <t t-if="amount_dec != '0'"><t t-esc="amount_dec"/>/100 M.N</t></span>. -->
+                    <span class="ml4 mr4" style="border-bottom: 1px solid;" t-esc="o.l10n_mx_edi_amount_to_text()"/>
                     VALOR DE ESTA MERCANCÍA QUE HE RECIBIDO A MI ENTERA SATISFACCIÓN, ESTE PAGARE ES MERCANTIL Y ESTA REGIDO POR LA LEY 
                     GENERAL DE TÍTULOS Y OPERACIONES DE CRÉDITO EN SU ARTICULO 173 PARTE FINAL Y ARTÍCULOS CORRELATIVOS POR NO SER 
                     PAGARE DOMICILIADO. 
@@ -56,13 +83,17 @@
         <xpath expr="//*[@id='total']//table/tr[last()]" position="after">
             <tr class="border-black">
                 <td class="text-right" colspan="2">
-                    <t t-set="amount" t-value="int(o.amount_total)" />
-                    <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]" />
-                    <span>
+                    <!-- <t t-set="amount" t-value="int(o.amount_total)" /> -->
+                    <!-- <t t-set="amount_dec" t-value="str(o.amount_total-amount)[2:4]" /> -->
+                    <!-- <t t-set="amount_dec" t-value="str(o.amount_total).split('.')[1]"/> -->
+                    <!-- <span>
                         <t t-esc="o.currency_id.amount_to_text(amount)" />
                         <t t-if="amount_dec != '0'">
                             <t t-esc="amount_dec" />/100 M.N</t>
-                    </span>
+                    </span> -->
+                    <p>
+                        <span t-esc="o.l10n_mx_edi_amount_to_text()"/>
+                    </p>
                 </td>
             </tr>
         </xpath>

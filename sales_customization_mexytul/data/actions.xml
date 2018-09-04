@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_invoice_create_write_automation" model="base.automation">
+        <field name="name">Set value of Usage and Payment Method</field>
+        <field name="model_id" ref="account.model_account_invoice"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="state">code</field>
+        <field name="code">
+# for rec in records.filtered(lambda inv: inv.partner_id.l10n_mx_edi_usage != False or inv.partner_id.payment_method != False):
+    # raise Warning(str(len(records)))
+    # rec.write({
+    #    'l10n_mx_edi_usage': rec.partner_id.l10n_mx_edi_usage,
+    #    'payment_method': rec.partner_id.payment_method,
+    #})
+        </field>
+    </record>
+
+</odoo>

@@ -17,12 +17,13 @@ class AccountInvoice(models.Model):
     type_of_voucher = fields.Selection([('ingreso', 'ingreso'), ('egreso', 'egreso')], string="Type of Voucher")
     total_due = fields.Monetary(compute='_compute_total_due', string="Total Due")
     balance_expiration = fields.Monetary(compute='_compute_balance_expiration', string="Balance Expiration")
-    payment_method = fields.Selection([
-        ('01 Efectivo', '01 Efectivo'),
-        ('02 Cheque', '02 Cheque'),
-        ('03 Transferencia', '03 Transferencia'),
-        ('04 Tarjeta de Crédito', '04 Tarjeta de Crédito'),
-        ('99 Por definir', '99 Por definir')], string="Payment Method")
+    # payment_method = fields.Selection([
+    #     ('01 Efectivo', '01 Efectivo'),
+    #     ('02 Cheque', '02 Cheque'),
+    #     ('03 Transferencia', '03 Transferencia'),
+    #     ('04 Tarjeta de Crédito', '04 Tarjeta de Crédito'),
+    #     ('99 Por definir', '99 Por definir')], string="Payment Method")
+    payment_method = fields.Selection(related='partner_id.payment_method', string="Payment Method", store=True, readonly=True)
 
     @api.onchange('partner_id')
     def onchange_partner(self):
@@ -54,3 +55,15 @@ class AccountInvoice(models.Model):
     def _compute_balance_expiration(self):
         for invoice in self:
             invoice.balance_expiration = invoice.total_due - invoice.amount_total
+
+
+class AccountInvoiceLine(models.Model):
+    _inherit = 'account.invoice.line'
+
+    tax_amount = fields.Monetary(compute='_compute_tax_amount', string="Tax Amount", store=True, readonly=True)
+
+    @api.depends('price_total', 'price_subtotal', 'invoice_line_tax_ids')
+    def _compute_tax_amount(self):
+        for line in self.filtered(lambda ln: ln.invoice_line_tax_ids):
+            line.tax_amount =  line.price_total - line.price_subtotal
+            # taxes = self.invoice_line_tax_ids.compute_all(price, currency, self.quantity, product=self.product_id, partner=self.invoice_id.partner_id)
