@@ -44,7 +44,7 @@
         </xpath>
 
         <xpath expr="//table[@name='invoice_line_table']//th[@t-if='display_discount']" position="after">
-            <th class="text-right">Tax Amount</th>
+            <th class="text-right">Mporte impuestos</th>
         </xpath>
         <xpath expr="//tbody[hasclass('invoice_tbody')]//td[@t-if='display_discount']" position="after">
             <td class="text-right">
