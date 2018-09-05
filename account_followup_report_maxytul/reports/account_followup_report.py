@@ -13,9 +13,9 @@ class AccountFollowupReport(models.AbstractModel):
     def get_columns_name(self, options):
         headers = super(AccountFollowupReport, self).get_columns_name(options)
         headers.extend([
-            {'name': _(' Days Expired VS Invoiced Date '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
+            {'name': _(' Dias Vencidos '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
+            {'name': _(' Dias De Credito '), 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Assigned Fee '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
-            {'name': _(' Invoice/Credit Note '), 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Total Invoiced '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Discount '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Total Amount with Discount '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
@@ -78,8 +78,8 @@ class AccountFollowupReport(models.AbstractModel):
                     {'name': aml.blocked, 'blocked': aml.blocked},
                     amount,
                     aml.invoice_id and (datetime.strptime(aml.date_maturity, "%Y-%m-%d") - datetime.strptime(aml.invoice_id.date_invoice, "%Y-%m-%d")).days or 0,
+                    aml.invoice_id and aml.invoice_id.payment_term_id and aml.invoice_id.payment_term_id.display_name or '',
                     pricelist,
-                    aml.invoice_id.number,
                     self.format_value(total_invoice, currency=currency),
                     self.format_value(total_discount, currency=currency),
                     self.format_value(aml.invoice_id.amount_total, currency),
