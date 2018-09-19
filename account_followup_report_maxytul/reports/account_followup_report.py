@@ -16,7 +16,6 @@ class AccountFollowupReport(models.AbstractModel):
             {'name': _(' Dias Vencidos '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Dias De Credito '), 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Assigned Fee '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
-            {'name': _(' Total Invoiced '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Discount '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Total Amount with Discount '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Payments '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
@@ -80,7 +79,6 @@ class AccountFollowupReport(models.AbstractModel):
                     aml.invoice_id and (datetime.strptime(aml.date_maturity, "%Y-%m-%d") - datetime.strptime(aml.invoice_id.date_invoice, "%Y-%m-%d")).days or 0,
                     aml.invoice_id and aml.invoice_id.payment_term_id and aml.invoice_id.payment_term_id.display_name or '',
                     pricelist,
-                    self.format_value(total_invoice, currency=currency),
                     self.format_value(total_discount, currency=currency),
                     self.format_value(aml.invoice_id.amount_total, currency),
                     self.format_value(payments, currency=currency),
@@ -105,7 +103,7 @@ class AccountFollowupReport(models.AbstractModel):
                 'class': 'total',
                 'unfoldable': False,
                 'level': 0,
-                'columns': [{'name': v} for v in ['']*(10 if self.env.context.get('print_mode') else 12) + [total >= 0 and _('Total Due') or '', totalXXX]],
+                'columns': [{'name': v} for v in ['']*(9 if self.env.context.get('print_mode') else 11) + [total >= 0 and _('Total Due') or '', totalXXX]],
             })
             if total_issued > 0:
                 total_issued = formatLang(self.env, total_issued, currency_obj=currency)
@@ -116,6 +114,6 @@ class AccountFollowupReport(models.AbstractModel):
                     'class': 'total',
                     'unfoldable': False,
                     'level': 0,
-                    'columns': [{'name': v} for v in ['']*(10 if self.env.context.get('print_mode') else 12) + [_('Total Overdue'), total_issued]],
+                    'columns': [{'name': v} for v in ['']*(9 if self.env.context.get('print_mode') else 11) + [_('Total Overdue'), total_issued]],
                 })
         return lines
