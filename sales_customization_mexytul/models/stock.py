@@ -20,5 +20,7 @@ class StockPicking(models.Model):
                     final = True
                 else:
                     final = False
-                sale_id.action_invoice_create(final=final)
+                invoice_ids = sale_id.action_invoice_create(final=final)
+                for invoice in self.env['account.invoice'].browse(invoice_ids):
+                    invoice.action_invoice_open()
         return res
