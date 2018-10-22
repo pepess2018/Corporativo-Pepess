@@ -13,6 +13,10 @@ class SaleOrder(models.Model):
             invoice_vals.update({
                 'journal_id': self.warehouse_id.out_invoice_journal_id.id
             })
+        if self.env.context.get('refund_journal_id'):
+            invoice_vals.update({
+                'journal_id': self.env.context['refund_journal_id'],
+            })
         return invoice_vals
 
 
@@ -25,4 +29,6 @@ class SaleOrderLine(models.Model):
         if self.order_id.warehouse_id and self.order_id.warehouse_id.out_invoice_journal_id:
             invoice_account = invoice_line_values['account_id']
             invoice_line_values['account_id'] = self.order_id.warehouse_id.out_invoice_journal_id.income_account_id and self.order_id.warehouse_id.out_invoice_journal_id.income_account_id.id or invoice_account
+        if self.env.context.get('ref_inv_acc_id'):
+            invoice_line_values['account_id'] = self.env.context['ref_inv_acc_id']
         return invoice_line_values
