@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models
+from odoo.addons.base.res import res_users
 
 
 class ResPartner(models.Model):
