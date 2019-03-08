@@ -48,14 +48,14 @@ class AccountInvoice(models.Model):
             if getattr(warehouse, journal_inv_mapping[invoice.type], False):
                 journal_id = getattr(warehouse, journal_inv_mapping[invoice.type]).id
         values = super(AccountInvoice, self)._prepare_refund(invoice, date_invoice=date_invoice, date=date, description=description, journal_id=journal_id)
-        inv_journal = self.env['account.journal'].browse(values['journal_id'])
+        # inv_journal = self.env['account.journal'].browse(values['journal_id'])
         for inv_line in values['invoice_line_ids']:
             inv_line_values = inv_line[2]
-            inv_line_acc = inv_line_values['account_id']
-            if inv_journal.income_account_id and inv_line_values['account_id'] == inv_journal.income_account_id.id:
-                inv_line_values['account_id'] = inv_journal.expense_account_id and inv_journal.expense_account_id.id or inv_line_acc
-            elif inv_journal.expense_account_id and inv_line_values['account_id'] == inv_journal.expense_account_id.id:
-                inv_line_values['account_id'] = inv_journal.income_account_id and inv_journal.income_account_id.id or inv_line_acc
+            inv_line_values['account_id'] = self.env['account.invoice.line'].with_context({'type': values['type'], 'journal_id': values['journal_id']})._default_account()
+            # if inv_journal.income_account_id and inv_line_acc == inv_journal.income_account_id.id:
+            #     inv_line_values['account_id'] = inv_journal.expense_account_id and inv_journal.expense_account_id.id or inv_line_acc
+            # elif inv_journal.expense_account_id and inv_line_acc == inv_journal.expense_account_id.id:
+            #     inv_line_values['account_id'] = inv_journal.income_account_id and inv_journal.income_account_id.id or inv_line_acc
         return values
 
 
@@ -68,4 +68,4 @@ class AccountInvoiceLine(models.Model):
             journal = self.env['account.journal'].browse(self._context.get('journal_id'))
             if self._context.get('type') in ('out_invoice', 'in_refund'):
                 return journal.income_account_id and journal.income_account_id.id or journal.default_credit_account_id.id
-            return journal.expense_account_id and journal.expense_account_id.id or journal.default_debit_account_id
+            return journal.expense_account_id and journal.expense_account_id.id or journal.default_debit_account_id.id
