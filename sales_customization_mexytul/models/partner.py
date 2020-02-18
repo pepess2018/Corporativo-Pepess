@@ -40,4 +40,5 @@ class ResPartner(models.Model):
         ('02 Cheque', '02 Cheque'),
         ('03 Transferencia', '03 Transferencia'),
         ('04 Tarjeta de Crédito', '04 Tarjeta de Crédito'),
+        ('05 Tarjeta de Débito', '05 Tarjeta de Débito'),
         ('99 Por definir', '99 Por definir')], string="Payment Method")
