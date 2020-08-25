@@ -17,7 +17,7 @@ class SaleOrder(models.Model):
             if not group_mexytul_credit_limit:
                 if (order.partner_id.credit  > order.partner_id.credit_limit):
                     raise Warning(_("The Selected customer exceeds the credit limit set or have amount due"))
-                if order.order_line.filtered(lambda ol: ol.price_unit < (ol.product_id.base_price) and not ol.is_delivery):
+                if order.order_line.filtered(lambda ol: ol.price_unit < (ol.base_price) and not ol.is_delivery):
                     raise Warning(_("The Unit price of one or more product is Zero"))
                 # if not group_system:
             # I want that if qty is not available in warehouse order cannot be confirmed even Admin user should not be able to confirm the order.
@@ -43,7 +43,7 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    base_price = fields.Monetary(string='Sale Base Price', related='product_id.base_price', digits=dp.get_precision('Product Price'), store=True)
+    base_price = fields.Monetary(string='Sale Base Price', compute='_compute_base_price', digits=dp.get_precision('Product Price'), store=True)
 
     @api.multi
     def product_qty_check_availability(self):
@@ -64,8 +64,13 @@ class SaleOrderLine(models.Model):
             return True
         raise Warning(msg)
 
+    @api.depends('product_id', 'price_unit')
+    def _compute_base_price(self):
+        for rec in self:
+            rec.base_price = rec.product_id.base_price
+
     @api.one
     @api.constrains('price_unit', 'base_price')
     def validate_prices(self):
-        if not self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit") and self.filtered(lambda ol: ol.price_unit < ol.product_id.base_price and not self.is_delivery):
-            raise Warning(_("The Products : {} has the Unit Price less than the Base Sale Price.".format(", ".join([ ol.product_id.name for ol in self.filtered(lambda ol: ol.price_unit < ol.product_id.base_price)]))))
+        if not self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit") and self.filtered(lambda ol: ol.price_unit < ol.base_price and not self.is_delivery):
+            raise Warning(_("The Products : {} has the Unit Price less than the Base Sale Price.".format(", ".join([ ol.product_id.name for ol in self.filtered(lambda ol: ol.price_unit < ol.base_price)]))))
