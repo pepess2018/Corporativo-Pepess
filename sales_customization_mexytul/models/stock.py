@@ -13,7 +13,7 @@ class StockPicking(models.Model):
            In case there is a return for the delivery then a draft credit note should be automatically created.
         """
         res = super(StockPicking, self).action_done()
-        self = self.sudo()
+        # self = self.sudo()
         for picking in self:
             sale_id = picking.sale_id
             if sale_id and sale_id.invoice_status == 'to invoice' and any(l.invoice_status == 'to invoice' for l in sale_id.order_line):
