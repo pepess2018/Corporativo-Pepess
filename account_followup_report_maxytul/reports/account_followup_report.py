@@ -15,7 +15,8 @@ class AccountFollowupReport(models.AbstractModel):
             Return the name of the columns of the follow-ups report
         """
         headers = super(AccountFollowupReport, self)._get_columns_name(options)
-        headers.extend([
+        final_headers = headers[:3] + headers[4:]
+        custom_headers = [
             {'name': _(' Dias Vencidos '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Dias De Credito '), 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Assigned Fee '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
@@ -23,8 +24,9 @@ class AccountFollowupReport(models.AbstractModel):
             {'name': _(' Total Amount with Discount '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Payments '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'},
             {'name': _(' Balance due '), 'class': 'number', 'style': 'text-align:right; white-space:nowrap;'}
-            ])
-        return headers
+            ]
+        final_headers.extend(custom_headers)
+        return final_headers
 
     def _get_lines(self, options, line_id=None):
         """
@@ -79,7 +81,7 @@ class AccountFollowupReport(models.AbstractModel):
                 columns = [
                     format_date(self.env, aml.date, lang_code=lang_code),
                     date_due,
-                    aml.invoice_id.origin,
+#                     aml.invoice_id.origin,
                     aml.invoice_id.name or aml.name,
                     aml.expected_pay_date and aml.expected_pay_date + ' ' + aml.internal_note or '',
                     {'name': aml.blocked, 'blocked': aml.blocked},
@@ -93,7 +95,7 @@ class AccountFollowupReport(models.AbstractModel):
                     amount
                     ]
                 if self.env.context.get('print_mode'):
-                    columns = columns[:4] + columns[6:]
+                    columns = columns[:3] + columns[5:]
                 lines.append({
                     'id': aml.id,
                     'invoice_id': aml.invoice_id.id,
@@ -115,7 +117,7 @@ class AccountFollowupReport(models.AbstractModel):
                 'class': 'total',
                 'unfoldable': False,
                 'level': 0,
-                'columns': [{'name': v} for v in [''] * (10 if self.env.context.get('print_mode') else 12) + [total >= 0 and _('Total Due') or '', total_due]],
+                'columns': [{'name': v} for v in [''] * (9 if self.env.context.get('print_mode') else 11) + [total >= 0 and _('Total Due') or '', total_due]],
             })
             if total_issued > 0:
                 total_issued = formatLang(self.env, total_issued, currency_obj=currency)
@@ -126,7 +128,7 @@ class AccountFollowupReport(models.AbstractModel):
                     'class': 'total',
                     'unfoldable': False,
                     'level': 0,
-                    'columns': [{'name': v} for v in [''] * (10 if self.env.context.get('print_mode') else 12) + [_('Total Overdue'), total_issued]],
+                    'columns': [{'name': v} for v in [''] * (9 if self.env.context.get('print_mode') else 11) + [_('Total Overdue'), total_issued]],
                 })
             # Add an empty line after the total to make a space between two currencies
             line_num += 1
