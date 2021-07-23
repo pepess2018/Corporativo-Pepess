@@ -6,7 +6,6 @@ from odoo import api, models
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    @api.multi
     def action_done(self):
         """Override to create auto invoice after delviery of the products
            As the soon as the delivery is validated, it should create a draft invoice with invoiceable lines automatically
@@ -43,6 +42,9 @@ class StockPicking(models.Model):
                     invoice_ids = sale_id.with_context(context).action_invoice_create(final=final)
                 else:
                     invoice_ids = sale_id.action_invoice_create(final=final)
-                for invoice in self.env['account.invoice'].browse(invoice_ids):
+                for invoice in self.env['account.move'].browse(invoice_ids):
                     invoice.action_invoice_open()
         return res
+
+
+

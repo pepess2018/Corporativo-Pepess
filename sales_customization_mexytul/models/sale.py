@@ -9,7 +9,6 @@ from odoo.tools import float_compare
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.multi
     def action_confirm(self):
         group_mexytul_credit_limit = self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit")
         group_system = self.user_has_groups("base.group_system")
@@ -24,7 +23,6 @@ class SaleOrder(models.Model):
             order.order_line.product_qty_check_availability()
         return super(SaleOrder, self).action_confirm()
 
-    @api.multi
     def _prepare_invoice(self):
         """
             Inherited to pass the extra value(warehouse address) on invoice
@@ -43,9 +41,8 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    base_price = fields.Monetary(string='Sale Base Price', compute='_compute_base_price', digits=dp.get_precision('Product Price'), store=True)
+    base_price = fields.Monetary(string='Sale Base Price', compute='_compute_base_price', digits='Product Price', store=True)
 
-    @api.multi
     def product_qty_check_availability(self):
         msg = ''
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
@@ -69,8 +66,7 @@ class SaleOrderLine(models.Model):
         for rec in self:
             rec.base_price = rec.product_id.base_price
 
-    @api.one
-    @api.constrains('price_unit', 'base_price')
-    def validate_prices(self):
-        if not self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit") and self.filtered(lambda ol: ol.price_unit < ol.base_price and not self.is_delivery):
-            raise Warning(_("The Products : {} has the Unit Price less than the Base Sale Price.".format(", ".join([ ol.product_id.name for ol in self.filtered(lambda ol: ol.price_unit < ol.base_price)]))))
+    # @api.constrains('price_unit', 'base_price')
+    # def validate_prices(self):
+    #     if not self.user_has_groups("sales_customization_mexytul.group_mexytul_credit_limit") and self.filtered(lambda ol: ol.price_unit < ol.base_price and not self.is_delivery):
+    #         raise Warning(_("The Products : {} has the Unit Price less than the Base Sale Price.".format(", ".join([ ol.product_id.name for ol in self.filtered(lambda ol: ol.price_unit < ol.base_price)]))))

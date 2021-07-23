@@ -28,23 +28,24 @@ class AccountFollowupReport(models.AbstractModel):
         final_headers.extend(custom_headers)
         return final_headers
 
+
     def _get_lines(self, options, line_id=None):
         """
-            Override
-            Compute and return the lines of the columns of the follow-ups report.
+        Override
+        Compute and return the lines of the columns of the follow-ups report.
         """
         # Get date format for the lang
         partner = options.get('partner_id') and self.env['res.partner'].browse(options['partner_id']) or False
         if not partner:
             return []
-        lang_code = partner.lang or self.env.user.lang or 'en_US'
 
+        lang_code = partner.lang if self._context.get('print_mode') else self.env.user.lang or get_lang(self.env).code
         lines = []
         res = {}
         today = fields.Date.today()
         line_num = 0
-        for l in partner.unreconciled_aml_ids:
-            if l.company_id == self.env.user.company_id:
+        for l in partner.unreconciled_aml_ids.filtered(lambda l: l.company_id == self.env.company):
+            if l.company_id == self.env.company:
                 if self.env.context.get('print_mode') and l.blocked:
                     continue
                 currency = l.currency_id or l.company_id.currency_id
@@ -66,47 +67,60 @@ class AccountFollowupReport(models.AbstractModel):
                     date_due = {'name': date_due, 'class': 'color-red date', 'style': 'white-space:nowrap;text-align:center;color: red;'}
                 if is_payment:
                     date_due = ''
+                move_line_name = self._format_aml_name(aml.name, aml.move_id.ref, aml.move_id.name)
+                if self.env.context.get('print_mode'):
+                    move_line_name = {'name': move_line_name, 'style': 'text-align:right; white-space:normal;'}
                 amount = formatLang(self.env, amount, currency_obj=currency)
                 line_num += 1
+                expected_pay_date = format_date(self.env, aml.expected_pay_date, lang_code=lang_code) if aml.expected_pay_date else ''
+                invoice_origin = aml.move_id.invoice_origin or ''
+                if len(invoice_origin) > 43:
+                    invoice_origin = invoice_origin[:40] + '...'
+
+                # Total invoice imount without discount
+                total_invoice = sum([inv_line.quantity * inv_line.price_unit for inv_line in aml.move_id.invoice_line_ids])
+                total_invoice = total_invoice + aml.move_id.amount_tax
+                # total discount
+                total_discount = sum([inv_line.discount and inv_line.price_unit * (inv_line.discount / 100) * inv_line.quantity or 0.00 for inv_line in aml.move_id.invoice_line_ids]) or 0.0
+
+                pay = aml.move_id._get_reconciled_info_JSON_values()
+                payments = aml.move_id.invoice_payments_widget and sum([payment_vals['amount'] for payment_vals in pay]) or 0.0
+                # payments = aml.move_id.payment_move_line_ids and sum([payment_vals['amount'] for payment_vals in aml.move_id._get_payments_vals()]) or 0.00
+                
                 pricelist = ''
                 public_pricelist = self.env.ref('product.list0', raise_if_not_found=False)
-                if aml.invoice_id and public_pricelist:
-                    pricelist = _('Public Pricelist') if aml.invoice_id.partner_id.property_product_pricelist == public_pricelist else _('Tarifa de venta')
-                # Total invoice imount without discount
-                total_invoice = sum([inv_line.quantity * inv_line.price_unit for inv_line in aml.invoice_id.invoice_line_ids])
-                total_invoice = total_invoice + aml.invoice_id.amount_tax
-                # total discount
-                total_discount = sum([inv_line.discount and inv_line.price_unit * (inv_line.discount / 100) * inv_line.quantity or 0.00 for inv_line in aml.invoice_id.invoice_line_ids])
-                payments = aml.invoice_id.payment_move_line_ids and sum([payment_vals['amount'] for payment_vals in aml.invoice_id._get_payments_vals()]) or 0.00
+                if aml.move_id and public_pricelist:
+                    pricelist = _('Public Pricelist') if aml.move_id.partner_id.property_product_pricelist == public_pricelist else _('Tarifa de venta')
                 columns = [
                     format_date(self.env, aml.date, lang_code=lang_code),
                     date_due,
-#                     aml.invoice_id.origin,
-                    aml.invoice_id.name or aml.name,
+#                     aml.move_id.origin,
+                    aml.move_id.name or aml.name,
                     aml.expected_pay_date and aml.expected_pay_date + ' ' + aml.internal_note or '',
                     {'name': aml.blocked, 'blocked': aml.blocked},
                     amount,
-                    aml.invoice_id and (aml.date_maturity - aml.invoice_id.date_invoice).days or 0,
-                    aml.invoice_id and aml.invoice_id.payment_term_id and aml.invoice_id.payment_term_id.display_name or '',
+                    aml.move_id and (aml.date_maturity - aml.move_id.invoice_date).days or 0,
+                    aml.move_id and aml.move_id.invoice_payment_term_id and aml.move_id.invoice_payment_term_id.display_name or '',
                     pricelist,
-                    self.format_value(total_discount, currency=currency),
-                    self.format_value(aml.invoice_id.amount_total, currency),
-                    self.format_value(payments, currency=currency),
+                    formatLang(self.env, total_discount, currency_obj=currency),
+                    formatLang(self.env, aml.move_id.amount_total, currency_obj=currency),
+                    formatLang(self.env, payments, currency_obj=currency),
+                    
+                    # self.format_value(total_discount, currency=currency),
+                    # self.format_value(aml.move_id.amount_total, currency),
+                    # self.format_value(payments, currency=currency),
                     amount
                     ]
                 if self.env.context.get('print_mode'):
-                    columns = columns[:3] + columns[5:]
+                    columns = columns[:4] + columns[6:]
                 lines.append({
                     'id': aml.id,
-                    'invoice_id': aml.invoice_id.id,
-                    'view_invoice_id': self.env['ir.model.data'].get_object_reference('account', 'invoice_form')[1],
                     'account_move': aml.move_id,
                     'name': aml.move_id.name,
                     'caret_options': 'followup',
                     'move_id': aml.move_id.id,
                     'type': is_payment and 'payment' or 'unreconciled_aml',
                     'unfoldable': False,
-                    'has_invoice': bool(aml.invoice_id),
                     'columns': [type(v) == dict and v or {'name': v} for v in columns],
                 })
             total_due = formatLang(self.env, total, currency_obj=currency)
@@ -115,9 +129,10 @@ class AccountFollowupReport(models.AbstractModel):
                 'id': line_num,
                 'name': '',
                 'class': 'total',
+                'style': 'border-top-style: double',
                 'unfoldable': False,
-                'level': 0,
-                'columns': [{'name': v} for v in [''] * (9 if self.env.context.get('print_mode') else 11) + [total >= 0 and _('Total Due') or '', total_due]],
+                'level': 3,
+                'columns': [{'name': v} for v in [''] * (3 if self.env.context.get('print_mode') else 5) + [total >= 0 and _('Total Due') or '', total_due]],
             })
             if total_issued > 0:
                 total_issued = formatLang(self.env, total_issued, currency_obj=currency)
@@ -127,8 +142,8 @@ class AccountFollowupReport(models.AbstractModel):
                     'name': '',
                     'class': 'total',
                     'unfoldable': False,
-                    'level': 0,
-                    'columns': [{'name': v} for v in [''] * (9 if self.env.context.get('print_mode') else 11) + [_('Total Overdue'), total_issued]],
+                    'level': 3,
+                    'columns': [{'name': v} for v in [''] * (3 if self.env.context.get('print_mode') else 5) + [_('Total Overdue'), total_issued]],
                 })
             # Add an empty line after the total to make a space between two currencies
             line_num += 1
@@ -136,6 +151,7 @@ class AccountFollowupReport(models.AbstractModel):
                 'id': line_num,
                 'name': '',
                 'class': '',
+                'style': 'border-bottom-style: none',
                 'unfoldable': False,
                 'level': 0,
                 'columns': [{} for col in columns],
