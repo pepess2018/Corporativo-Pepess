@@ -13,8 +13,8 @@ class PosConfig(models.Model):
 class PosOrder(models.Model):
     _inherit = "pos.order"
 
-    def _prepare_invoice(self):
-        invoice_data = super(PosOrder, self)._prepare_invoice()
+    def _prepare_invoice_vals(self):
+        invoice_data = super(PosOrder, self)._prepare_invoice_vals()
         warehouse_id = self.session_id.config_id.warehouse_id
         type_journal_mapping = {
             'out_invoice': 'out_invoice_journal_id',

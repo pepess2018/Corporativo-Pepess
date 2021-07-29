@@ -10,7 +10,7 @@ class ProductTemplate(models.Model):
 
     margin = fields.Float(string='Margin %', related='categ_id.margin', help="Product base price = Margin'%'*cost price")
     base_price = fields.Monetary(string='Sale Base Price', compute='_compute_product_base_price',
-                                                        digits=dp.get_precision('Product Price'))
+                                                        digits='Product Price')
 
     @api.depends('margin', 'standard_price')
     def _compute_product_base_price(self):
@@ -30,7 +30,7 @@ class ProductProduct(models.Model):
 
     margin = fields.Float(string='Margin %', related='categ_id.margin', help="Product base price = Margin'%'*cost price")
     base_price = fields.Monetary(string='Sale Base Price', compute='_compute_product_base_price',
-                                                        digits=dp.get_precision('Product Price'))
+                                                        digits='Product Price')
 
     @api.depends('margin', 'standard_price')
     def _compute_product_base_price(self):

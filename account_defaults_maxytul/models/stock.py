@@ -30,7 +30,6 @@ class StockWarehouse(models.Model):
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    @api.multi
     def _get_accounting_data_for_valuation(self):
         journal_id, acc_src, acc_dest, acc_valuation = super(StockMove, self)._get_accounting_data_for_valuation()
         if self.warehouse_id.stock_valuation_account_id:

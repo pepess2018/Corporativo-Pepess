@@ -9,7 +9,7 @@
                 <xpath expr="//sheet//notebook" position="before">
                     <group>
                         <group>
-                            <field name="forwarder_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]"/>
+                            <field name="forwarder_id" context="{'res_partner_search_mode': 'supplier'}" domain="[('supplier_rank','>',0)]"/>
                             <field name="container_capacity" />
                             <field name="ocean_freight_cost" />
                         </group>
