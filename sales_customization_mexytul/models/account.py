@@ -50,7 +50,7 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    tax_amount = fields.Monetary(compute='_compute_tax_amount', string="Tax Amount", store=True, readonly=True)
+    tax_amount = fields.Monetary(compute='_compute_tax_amount', string="Tax Amount", store=False, readonly=True)
 
     @api.depends('price_total', 'price_subtotal', 'tax_ids')
     def _compute_tax_amount(self):
