@@ -50,9 +50,9 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    tax_amount = fields.Monetary(compute='_compute_tax_amount', string="Tax Amount", store=False, readonly=True)
+    tax_amount = fields.Monetary(compute='_compute_tax_amount', default=0, string="Tax Amount", store=False, readonly=True)
 
-    @api.depends('price_total', 'price_subtotal', 'tax_ids')
+    @api.depends('price_unit', 'quantity','discount', 'tax_ids')
     def _compute_tax_amount(self):
-        for line in self.filtered(lambda ln: ln.tax_ids):
+        for line in self:
             line.tax_amount =  line.price_total - line.price_subtotal
