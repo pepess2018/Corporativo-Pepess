@@ -87,7 +87,7 @@ class PurchaseOrderLine(models.Model):
     @api.depends('order_id.truck_freight_cost', 'product_qty', 'unit_volume')
     def compute_unit_truck_freight_usd(self):
         for rec in self:
-            if rec.product_id.volume > 0:
+            if rec.product_qty > 0 and (rec.product_id.volume*rec.unit_volume) > 0:
                 rec.unit_truck_freight_usd = (rec.order_id.truck_freight_cost/rec.product_qty)/rec.product_id.volume*rec.unit_volume
 
     total_freight_cost_usd = fields.Float(string="Total Freight Cost(USD)", compute="compute_total_freight_cost_usd", store=True,
